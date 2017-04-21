@@ -9,9 +9,33 @@ body {
   font-size: 16px;
 }
 
-h1, h2, h3, h4, h5, h6, input {
+input, button {
   font-family: inherit;
   font-size: inherit;
+}
+
+input[type='submit'], button {
+  cursor: pointer;
+}
+
+input:focus, button:focus {
+  outline: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0; padding: 0;
+}
+
+h1 {
+  font-size: 1.563em;
+}
+
+h2, h3, h4, h5, h6 {
+  font-size: 1.25em;
+}
+
+label {
+  font-size: 0.8em;
 }
 
 #root, .root {
@@ -21,4 +45,5 @@ h1, h2, h3, h4, h5, h6, input {
 .container {
   width: 100%;
   margin: 0 auto;
+  position: relative;
 }

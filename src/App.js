@@ -15,6 +15,7 @@ class App extends Component {
       // albumID: '',
       albumID: '8iMka',
       errorMsg: '',
+      title: '',
       images: [],
       imagesSelected: new Set()
     };
@@ -24,6 +25,7 @@ class App extends Component {
     this.handleEntrySubmit = this.handleEntrySubmit.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.toggleImgSelection = this.toggleImgSelection.bind(this);
+    this.resetSelections = this.resetSelections.bind(this);
   }
 
   handleNameChange(e) {
@@ -44,10 +46,9 @@ class App extends Component {
     let self = this;
     let url = imgurUrl + this.state.albumID;
 
-    console.log(self.state.name);
     if(self.state.name.length <= 0) {
       self.setState({
-        errorMsg: 'Name field is required'
+        errorMsg: 'Please enter your name'
       });
 
       return;
@@ -61,7 +62,7 @@ class App extends Component {
     }).then(function(res) {
       if(res.status !== 200) {
         self.setState({
-          errorMsg: 'Could not find album. Status code: ' + res.status
+          errorMsg: 'Could not find session. Status code: ' + res.status
         });
 
         return;
@@ -69,10 +70,10 @@ class App extends Component {
 
       res.json().then(function(res) {
         let images = res.data.images
-        console.log(images);
 
         self.setState({
           validAlbum: true,
+          title: res.data.title,
           images: images
         });
       });
@@ -99,16 +100,24 @@ class App extends Component {
     });
   }
 
+  resetSelections(e) {
+    this.setState({
+      imagesSelected: new Set()
+    });
+  }
+
   renderForm() {
     return (
       <form className='entry' onSubmit={this.handleEntrySubmit}>
-        <label htmlFor='name'>Name</label>
+        <h1>Hello.</h1>
+        <p>Enter your name and session code to view and select images from your photoshoot.</p>
+        <label htmlFor='name'>Your name *</label>
         <input type='text' name='name' value={this.state.name} onChange={this.handleNameChange} />
         {/* TODO: collaborative feature checkbox */}
-        <label htmlFor='albumID'>Imgur album ID</label>
+        <label htmlFor='albumID'>Session code *</label>
         <input type='text' name='albumID' value={this.state.albumID} onChange={this.handleAlbumChange} />
         <div className='errorMsg'>{this.state.errorMsg}</div>
-        <input type='submit' value='Submit' />
+        <input type='submit' value='View images' />
       </form>
     );
   }
@@ -118,19 +127,24 @@ class App extends Component {
       <div className='layout'>
         <div className='sidebar'>
           <form onSubmit={this.handleConfirm}>
-            <h1>Welcome, {this.state.name}!</h1>
+            {/* <h1>{this.state.title}</h1> */}
             <ul className='curSelections'>
+              {this.state.imagesSelected.size === 0 ? <li className='noImages'>Select an image</li> : null }
               {this.state.images.map((value, index) => {
                 if(this.state.imagesSelected.has(index)) {
                   return (
-                    <li key={index}>{index + 1}. {value.id}</li>
+                    // <li key={index}>{index + 1}. {value.id}</li>
+                    <li key={index}>
+                      <img src={value.link} alt='preview' />
+                    </li>
                   );
                 }
 
                 return null;
               })}
+              <button className='resetSelections' onClick={this.resetSelections}>Reset</button>
             </ul>
-            <div className='photoCounter'>Photos selected: {this.state.imagesSelected.size}</div>
+            <div className='photoCounter'>Images selected: {this.state.imagesSelected.size}</div>
             <input type='submit' value='Confirm' />
             {/* <div className='toggleDarkMode'>Toggle dark mode</div> */}
           </form>
@@ -142,7 +156,7 @@ class App extends Component {
               return (
                 <li key={index}>
                   <div className='shield' onClick={() => this.toggleImgSelection(index)}>
-                    {this.state.imagesSelected.has(index) ? <div className='selectedFill'>Selected</div> : null}
+                    {this.state.imagesSelected.has(index) ? <div className='selectedFill'></div> : null}
                   </div>
                   <img src={value.link} alt='preview' />
                 </li>
@@ -157,8 +171,10 @@ class App extends Component {
   render() {
     return (
       <div className='root'>
-        <div className='container'>
-          {this.state.validAlbum ? this.renderLayout() : this.renderForm()}
+        <div className={'container' + (!this.state.validAlbum ? ' backgroundFull' : '')}>
+          <div className='overlay'></div>
+          {!this.state.validAlbum ? this.renderForm() : this.renderLayout()}
+          <div className='copy'>&copy; {new Date().getFullYear()} Stephen Chen Photography</div>
         </div>
       </div>
     );
