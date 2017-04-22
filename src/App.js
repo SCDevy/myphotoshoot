@@ -13,7 +13,7 @@ class App extends Component {
     this.state = {
       validAlbum: false,
       name: '',
-      albumID: '',
+      albumID: props.match.params.id,
       errorMsg: '',
       title: '',
       images: [],
@@ -253,6 +253,7 @@ class App extends Component {
                 <td className='totalCol'>{this.state.imagesSelected.size - selectedPackage.incImages}</td>
                 <td className='totalCol'>${this.state.pricing.addImageCost}</td>
               </tr>
+              <tr className='divider'></tr>
               <tr>
                 <td></td>
                 <td></td>

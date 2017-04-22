@@ -82,6 +82,13 @@ input[type='submit']:hover {
   height: 32px;
 }
 
+.overlay table.invoice tr.divider {
+  width: 100%; height: 1px;
+  margin: 16px 0;
+  display: block;
+  background: gray;
+}
+
 .overlay table.invoice th, .overlay table.invoice td {
   padding: 16px;
 }
