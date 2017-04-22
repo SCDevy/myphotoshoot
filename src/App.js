@@ -3,6 +3,8 @@ import './App.css';
 
 const imgurUrl = '//api.imgur.com/3/album/';
 const clientID = '42706ac58d35f3a';
+const groupPackageIDs = [];
+const discountPackageIDs = ['8iMka'];
 
 class App extends Component {
   constructor(props) {
@@ -10,14 +12,35 @@ class App extends Component {
 
     this.state = {
       validAlbum: false,
-      // name: '',
-      name: 'Stephen',
-      // albumID: '',
-      albumID: '8iMka',
+      name: '',
+      albumID: '',
       errorMsg: '',
       title: '',
       images: [],
-      imagesSelected: new Set()
+      imagesSelected: new Set(),
+      showOverlay: false,
+      package: [
+        {
+          type: 'Basic',
+          basePrice: 70.00,
+          sessionLength: 90,
+          incImages: 4,
+          addImagePrice: 10.00
+        },
+        {
+          type: 'Group',
+          basePrice: 150.00,
+          sessionLength: 120,
+          incImages: 12,
+          addImagePrice: 10.00
+        }
+      ],
+      selectedPackage: 0,
+      pricing: {
+        addImageCost: 0,
+        subtotal: 0,
+        discountRate: 0,
+      }
     };
 
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -25,6 +48,7 @@ class App extends Component {
     this.handleEntrySubmit = this.handleEntrySubmit.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.toggleImgSelection = this.toggleImgSelection.bind(this);
+    this.toggleOverlay = this.toggleOverlay.bind(this);
     this.resetSelections = this.resetSelections.bind(this);
   }
 
@@ -69,12 +93,15 @@ class App extends Component {
       }
 
       res.json().then(function(res) {
-        let images = res.data.images
+        let images = res.data.images;
+
+        let groupPackageSet = new Set(groupPackageIDs);
 
         self.setState({
           validAlbum: true,
           title: res.data.title,
-          images: images
+          images: images,
+          selectedPackage: groupPackageSet.has(self.state.albumID) ? 1 : 0
         });
       });
     }
@@ -85,6 +112,24 @@ class App extends Component {
 
   handleConfirm(e) {
     e.preventDefault();
+
+    let selectedPackage = this.state.package[this.state.selectedPackage];
+
+    if(this.state.imagesSelected.size >= selectedPackage.incImages) {
+      // Calculate pricing
+      let imagesCost = this.state.imagesSelected.size * selectedPackage.addImagePrice - selectedPackage.incImages * selectedPackage.addImagePrice;
+      let subtotal = selectedPackage.basePrice + imagesCost;
+
+      let discountPackageSet = new Set(discountPackageIDs);
+
+      this.setState({
+        pricing: {
+          addImageCost: imagesCost,
+          subtotal: subtotal,
+          discountRate: discountPackageSet.has(this.state.albumID) ? 0.5 : 0
+        }
+      }, this.toggleOverlay);
+    }
   }
 
   toggleImgSelection(index) {
@@ -106,6 +151,12 @@ class App extends Component {
     });
   }
 
+  toggleOverlay(e) {
+    this.setState({
+      showOverlay: !this.state.showOverlay
+    });
+  }
+
   renderForm() {
     return (
       <form className='entry' onSubmit={this.handleEntrySubmit}>
@@ -117,7 +168,7 @@ class App extends Component {
         <label htmlFor='albumID'>Session code *</label>
         <input type='text' name='albumID' value={this.state.albumID} onChange={this.handleAlbumChange} />
         <div className='errorMsg'>{this.state.errorMsg}</div>
-        <input type='submit' value='View images' />
+        <input type='submit' value='Select images' />
       </form>
     );
   }
@@ -142,9 +193,10 @@ class App extends Component {
 
                 return null;
               })}
-              <button className='resetSelections' onClick={this.resetSelections}>Reset</button>
+              <button type='button' className='resetSelections' onClick={this.resetSelections}>Reset</button>
             </ul>
-            <div className='photoCounter'>Images selected: {this.state.imagesSelected.size}</div>
+            <div className='photoCounter'>Package type: {this.state.package[this.state.selectedPackage].type}</div>
+            <div className='photoCounter'>{this.state.imagesSelected.size}/{this.state.package[this.state.selectedPackage].incImages} images selected</div>
             <input type='submit' value='Confirm' />
             {/* <div className='toggleDarkMode'>Toggle dark mode</div> */}
           </form>
@@ -168,11 +220,77 @@ class App extends Component {
     );
   }
 
+  renderOverlay() {
+    let selectedPackage = this.state.package[this.state.selectedPackage];
+
+    return(
+      <div className='overlay'>
+        <button className='close' onClick={this.toggleOverlay}>Back to images</button>
+        <div className='cart'>
+          <h1>My images</h1>
+          <p>Package: {selectedPackage.type}</p>
+          {this.state.pricing.discountRate > 0 ? <p>Friends and family discount, 50% off</p> : null}
+          <p>{this.state.imagesSelected.size} images selected</p>
+
+          {/* TODO: Table with base package, additional photos, and Friends and Family discount reflected (50% off), total */}
+          <table className='invoice'>
+            <tbody>
+              <tr>
+                <th>Item</th>
+                <th className='totalCol'>Cost</th>
+                <th className='totalCol'>Quantity</th>
+                <th className='totalCol'>Total</th>
+              </tr>
+              <tr>
+                <td>{selectedPackage.type} {selectedPackage.sessionLength} minute photoshoot, incl. {selectedPackage.incImages} edited images</td>
+                <td className='totalCol'>${selectedPackage.basePrice}</td>
+                <td className='totalCol'>1</td>
+                <td className='totalCol'>${selectedPackage.basePrice}</td>
+              </tr>
+              <tr>
+                <td>Additional edited images</td>
+                <td className='totalCol'>${selectedPackage.addImagePrice}</td>
+                <td className='totalCol'>{this.state.imagesSelected.size - selectedPackage.incImages}</td>
+                <td className='totalCol'>${this.state.pricing.addImageCost}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td className='totalCol'>Subtotal</td>
+                <td className='totalCol'>${this.state.pricing.subtotal}</td>
+              </tr>
+              {this.state.pricing.discountRate > 0 ?
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td className='totalCol'>{this.state.pricing.discountRate * 100}% discount</td>
+                  <td className='totalCol'>${this.state.pricing.subtotal * this.state.pricing.discountRate}</td>
+                </tr>
+                : null}
+              <tr>
+                <td></td>
+                <td></td>
+                <td className='totalCol total'>Total</td>
+                <td className='totalCol total'>${this.state.pricing.subtotal - this.state.pricing.subtotal * this.state.pricing.discountRate}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>Some summary about payment options</p>
+          <p>Send this unique link with your photographer to share your selections:</p>
+
+          {/* <input type='text' value='someurl' /> */}
+          <button>Copy link</button>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className='root'>
         <div className={'container' + (!this.state.validAlbum ? ' backgroundFull' : '')}>
-          <div className='overlay'></div>
+          {this.state.showOverlay ? this.renderOverlay() : null}
           {!this.state.validAlbum ? this.renderForm() : this.renderLayout()}
           <div className='copy'>&copy; {new Date().getFullYear()} Stephen Chen Photography</div>
         </div>

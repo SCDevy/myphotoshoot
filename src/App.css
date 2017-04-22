@@ -11,13 +11,6 @@
   background-position: center;
 }
 
-.overlay {
-  position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-  /*background: rgba(255,255,255,0.6);*/
-  z-index: 0;
-}
-
 .copy {
   position: fixed;
   bottom: 16px; left: 16px;
@@ -47,6 +40,58 @@ input[type='submit']:hover {
   background: cornflowerblue;
 
   transition: background-color 0.16s ease-in-out;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  z-index: 2;
+}
+
+.overlay .close {
+  width: 80px; height: 80px;
+  padding: 16px;
+  position: absolute;
+  top: 0; left: 0;
+  border: none;
+  font-size: 0.8em;
+  background: black;
+  color: white;
+}
+
+.overlay h1 {
+  margin-bottom: 24px;
+}
+
+.overlay p {
+  margin-bottom: 12px;
+}
+
+.overlay table.invoice {
+  border-collapse: collapse;
+  text-align: left;
+  background: whitesmoke;
+}
+
+.overlay table.invoice tr {
+  height: 32px;
+}
+
+.overlay table.invoice th, .overlay table.invoice td {
+  padding: 16px;
+}
+
+.overlay table.invoice .totalCol {
+  text-align: right;
+}
+
+.overlay table.invoice .total {
+  font-weight: bold;
 }
 
 /* Entry */
@@ -107,12 +152,12 @@ form.entry .errorMsg {
 }
 
 .sidebar ul.curSelections .resetSelections {
-  width: 180px; height: 32px;
+  width: 219px; height: 32px;
   margin: 0 auto;
   position: absolute;
   top: 12px; right: 0; left: 0;
-  border: 1px solid black;
-  background: none;
+  border: none;
+  background: whitesmoke;
 }
 
 .sidebar ul.curSelections>li {
@@ -187,7 +232,7 @@ ul.imgList>li .shield>.selectedFill {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
   /*border: 4px solid black;*/
-  background: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.4);
   display: flex;
   align-items: center;
   justify-content: center;
