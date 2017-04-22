@@ -229,7 +229,7 @@ class App extends Component {
       <div className='overlay'>
         <button className='close' onClick={this.toggleOverlay}>Back to images</button>
         <div className='cart'>
-          <h1>My images</h1>
+          <h1>{this.state.name}'s images</h1>
           <p>Package: {selectedPackage.type}</p>
           {this.state.pricing.discountRate > 0 ? <p>Discount: Friends and family (50% off)</p> : null}
           <p>{this.state.imagesSelected.size} images selected</p>
@@ -288,6 +288,8 @@ class App extends Component {
           })}</p>
 
           <p className='cta'>Send a screenshot of this page to your photographer to share your image selections!</p>
+
+          <p>NOTE: Please submit one screenshot per group</p>
 
           {/* <p>Some summary about payment options</p> */}
           {/* <p>Send this unique link with your photographer to share your image selections:</p> */}
