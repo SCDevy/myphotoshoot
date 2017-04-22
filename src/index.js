@@ -11,6 +11,7 @@ ReactDOM.render(
       <Switch>
         <Route exact path="/" component={App}/>
         <Route exact path="/:id" component={App}/>
+        <Route exact path="/:id/:user" component={App}/>
         <Route render={() => <Redirect to='/' />} />
       </Switch>
     </div>

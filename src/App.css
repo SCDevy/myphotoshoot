@@ -69,10 +69,16 @@ input[type='submit']:hover {
 }
 
 .overlay p {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.overlay .cta {
+  font-weight: bold;
+  color: limegreen;
 }
 
 .overlay table.invoice {
+  margin: 24px 0;
   border-collapse: collapse;
   text-align: left;
   background: whitesmoke;

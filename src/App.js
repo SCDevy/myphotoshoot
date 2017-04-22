@@ -13,7 +13,7 @@ class App extends Component {
     this.state = {
       validAlbum: false,
       name: '',
-      albumID: props.match.params.id,
+      albumID: props.match.params.id ? props.match.params.id : '',
       errorMsg: '',
       title: '',
       images: [],
@@ -93,6 +93,8 @@ class App extends Component {
       }
 
       res.json().then(function(res) {
+        window.history.pushState({}, '', '/' + self.state.albumID);
+
         let images = res.data.images;
 
         let groupPackageSet = new Set(groupPackageIDs);
@@ -277,11 +279,21 @@ class App extends Component {
             </tbody>
           </table>
 
+          <p>Selected images: {this.state.images.map((value, index) => {
+            if(this.state.imagesSelected.has(index)) {
+              return value.id + ', ';
+            }
+
+            return null;
+          })}</p>
+
+          <p className='cta'>Send a screenshot of this page to your photographer to share your image selections!</p>
+
           {/* <p>Some summary about payment options</p> */}
-          <p>Send this unique link with your photographer to share your selections:</p>
+          {/* <p>Send this unique link with your photographer to share your image selections:</p> */}
 
           {/* <input type='text' value='someurl' /> */}
-          <button>Copy link</button>
+          {/* <button>Copy link</button> */}
         </div>
       </div>
     );
