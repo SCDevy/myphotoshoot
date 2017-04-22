@@ -1,7 +1,7 @@
 {
   "name": "myphotoshoot",
   "version": "0.1.0",
-  "homepage": "https://scdevy.github.io/myphotoshoot",
+  "homepage": "http://myphotoshoot.online/",
   "private": true,
   "devDependencies": {
     "gh-pages": "^0.12.0",

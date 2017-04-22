@@ -229,7 +229,7 @@ class App extends Component {
         <div className='cart'>
           <h1>My images</h1>
           <p>Package: {selectedPackage.type}</p>
-          {this.state.pricing.discountRate > 0 ? <p>Friends and family discount, 50% off</p> : null}
+          {this.state.pricing.discountRate > 0 ? <p>Discount: Friends and family (50% off)</p> : null}
           <p>{this.state.imagesSelected.size} images selected</p>
 
           {/* TODO: Table with base package, additional photos, and Friends and Family discount reflected (50% off), total */}
@@ -276,7 +276,7 @@ class App extends Component {
             </tbody>
           </table>
 
-          <p>Some summary about payment options</p>
+          {/* <p>Some summary about payment options</p> */}
           <p>Send this unique link with your photographer to share your selections:</p>
 
           {/* <input type='text' value='someurl' /> */}
