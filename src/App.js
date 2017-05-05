@@ -50,6 +50,7 @@ class App extends Component {
     this.toggleImgSelection = this.toggleImgSelection.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
     this.resetSelections = this.resetSelections.bind(this);
+    this.getSelectionsString = this.getSelectionsString.bind(this);
   }
 
   handleNameChange(e) {
@@ -157,6 +158,16 @@ class App extends Component {
     this.setState({
       showOverlay: !this.state.showOverlay
     });
+  }
+
+  getSelectionsString() {
+    let selections = '';
+    for (let i = 0; i < this.state.images.length; i++) {
+      if(this.state.imagesSelected.has(i)) {
+        selections += this.state.images[i].id + ', ';
+      }
+    }
+    return selections;
   }
 
   renderForm() {
@@ -279,15 +290,13 @@ class App extends Component {
             </tbody>
           </table>
 
-          <p>Selected images: {this.state.images.map((value, index) => {
-            if(this.state.imagesSelected.has(index)) {
-              return value.id + ', ';
-            }
+          <label>Selected images: </label>
+          <input className='copyText'
+            type='text'
+            readOnly
+            value={this.getSelectionsString()} />
 
-            return null;
-          })}</p>
-
-          <p className='cta'>Send a screenshot of this page to your photographer to share your image selections!</p>
+          <p className='cta'>Please 1) copy the "Selected images" text above and 2) send a screenshot of this page to your photographer to share your image selections!</p>
 
           <p>NOTE: Please submit one screenshot per group</p>
 
