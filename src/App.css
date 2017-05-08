@@ -173,6 +173,7 @@ form.entry .errorMsg {
   top: 10%;
   border-right: 1px solid rgba(0,0,0,0.04);
   box-sizing: border-box;
+  z-index: -1;
 }
 
 .sidebar form {
@@ -264,7 +265,7 @@ form.entry .errorMsg {
   margin-left: 300px;
   padding: 32px 12px 32px 32px; /* adjust for padding of li */
   box-sizing: border-box;
-  overflow-y: scroll;
+  /*overflow-y: scroll;*/
 }
 
 ul.imgList {
