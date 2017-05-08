@@ -3,14 +3,26 @@ import './App.css';
 
 const imgurUrl = '//api.imgur.com/3/album/';
 const clientID = '42706ac58d35f3a';
-const groupPackageIDs = [];
+const groupPackageIDs = ['ZBlzH'];
 const discountPackageIDs = ['8iMka'];
 
 class App extends Component {
   constructor(props) {
     super(props);
 
+    let isMobile = false;
+    if(navigator.userAgent.match(/Android/i)
+      || navigator.userAgent.match(/webOS/i)
+      || navigator.userAgent.match(/iPhone/i)
+      || navigator.userAgent.match(/iPad/i)
+      || navigator.userAgent.match(/iPod/i)
+      || navigator.userAgent.match(/BlackBerry/i)
+      || navigator.userAgent.match(/Windows Phone/i)) {
+      isMobile = true;
+    }
+
     this.state = {
+      isMobile: isMobile,
       validAlbum: false,
       name: '',
       albumID: props.match.params.id ? props.match.params.id : '',
@@ -164,7 +176,8 @@ class App extends Component {
     let selections = '';
     for (let i = 0; i < this.state.images.length; i++) {
       if(this.state.imagesSelected.has(i)) {
-        selections += this.state.images[i].id + ', ';
+        // selections += this.state.images[i].id + ', ';
+        selections += (i + 1) + ', ';
       }
     }
     return selections;
@@ -198,7 +211,9 @@ class App extends Component {
                 if(this.state.imagesSelected.has(index)) {
                   return (
                     // <li key={index}>{index + 1}. {value.id}</li>
-                    <li key={index}>
+                    <li className='previewContainer' key={index}>
+                      <div className='indexNumber'>{index + 1}</div>
+                      <div className='shield'></div>
                       <img src={value.link} alt='preview' />
                     </li>
                   );
@@ -221,7 +236,8 @@ class App extends Component {
               return (
                 <li key={index}>
                   <div className='shield' onClick={() => this.toggleImgSelection(index)}>
-                    {this.state.imagesSelected.has(index) ? <div className='selectedFill'></div> : null}
+                    <div className={'indexNumber' + (this.state.imagesSelected.has(index) ? ' isSelected' : '')}>{index + 1}</div>
+                    {/* {this.state.imagesSelected.has(index) ? <div className='selectedFill'></div> : null} */}
                   </div>
                   <img src={value.link} alt='preview' />
                 </li>
@@ -296,9 +312,9 @@ class App extends Component {
             readOnly
             value={this.getSelectionsString()} />
 
-          <p className='cta'>Please 1) copy the "Selected images" text above and 2) send a screenshot of this page to your photographer to share your image selections!</p>
+          <p className='cta'>Send a screenshot of this page to your photographer to share your selections.</p>
 
-          <p>NOTE: Please submit one screenshot per group</p>
+          <p>NOTE: One submission per group please!</p>
 
           {/* <p>Some summary about payment options</p> */}
           {/* <p>Send this unique link with your photographer to share your image selections:</p> */}
@@ -313,11 +329,18 @@ class App extends Component {
   render() {
     return (
       <div className='root'>
-        <div className={'container' + (!this.state.validAlbum ? ' backgroundFull' : '')}>
-          {this.state.showOverlay ? this.renderOverlay() : null}
-          {!this.state.validAlbum ? this.renderForm() : this.renderLayout()}
-          <div className='copy'>&copy; {new Date().getFullYear()} Stephen Chen Photography</div>
-        </div>
+        {this.state.isMobile ?
+            <div className='mobileContainer'>
+              <h1>Sorry!</h1>
+              <p>This site does not currently support mobile browsers. Please open this page on desktop.</p>
+            </div>
+          :
+          <div className={'container' + (!this.state.validAlbum ? ' backgroundFull' : '')}>
+            {this.state.showOverlay ? this.renderOverlay() : null}
+            {!this.state.validAlbum ? this.renderForm() : this.renderLayout()}
+            <div className='copy'>&copy; {new Date().getFullYear()} Stephen Chen Photography</div>
+          </div>
+        }
       </div>
     );
   }
