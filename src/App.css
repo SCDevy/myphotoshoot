@@ -268,7 +268,7 @@ form.entry .errorMsg {
 }
 
 ul.imgList {
-  margin: 0; padding: 0;
+  margin: 0; padding: 0 0 160px;
   list-style: none;
 }
 
@@ -279,6 +279,19 @@ ul.imgList>li {
   display: inline-block;
   vertical-align: top;
   box-sizing: border-box;
+  z-index: 0;
+
+  /*transition: z-index 0s linear 1s, transform 0.28s ease-in-out 0.2s;*/
+}
+
+ul.imgList>li:hover {
+  transform-origin: top;
+  animation: magnify 0.2s ease-in-out 1.2s normal 1 forwards;
+}
+
+@keyframes magnify {
+  from { z-index: 0; transform: scale(1); }
+  to { z-index: 99; transform: scale(1.6); }
 }
 
 ul.imgList>li .shield {

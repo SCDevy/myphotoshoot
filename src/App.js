@@ -314,7 +314,7 @@ class App extends Component {
 
           <p className='cta'>Send a screenshot of this page to your photographer to share your selections.</p>
 
-          <p>NOTE: One submission per group please!</p>
+          <p>NOTE: For groups, the total displayed is <strong>per-group</strong>, not per-person.</p>
 
           {/* <p>Some summary about payment options</p> */}
           {/* <p>Send this unique link with your photographer to share your image selections:</p> */}
