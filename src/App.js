@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-const imgurUrl = '//api.imgur.com/3/album/';
+const imgurUrl = 'https://api.imgur.com/3/album/';
 const clientID = '42706ac58d35f3a';
 const groupPackageIDs = ['ZBlzH'];
 const discountPackageIDs = ['8iMka'];
